@@ -11,14 +11,29 @@
 	<form id="form">
 		<div>Введите формулу:</div>
 		<input type="text" id="userFormula" placeholder=""><br>
-		<div>Введите СКНФ:</div>
-		<input type="text" id="userSKNF" placeholder=""><br>
-		<input type="button" id="yesAnsw" value="Проверить" onclick="main();">
+		<input type="button" id="yesAnsw" value="Построить СКНФ" onclick="main();">
+		<br>
 		<div>Построенная СКНФ:</div>
 		<div id="answer"></div>
+		<br>
+		<br>
+		<div>Таблица истинности:</div>
+		<table id="table"></table>
+		<table id="table2"></table>
+		<input type="button" id="erase" value="Очистить" onclick="location.reload();">
+
+		<br>
+		<br>
+		<div>Режим тестирования<br>Введите формулу:</div>
+		<input type="text" id="userFormula2" placeholder=""><br>
+		<div>Введите СКНФ:</div>
+		<input type="text" id="userSKNF" placeholder=""><br>
+		<input type="button" id="valid" value="Проверить" onclick="testmode();">
+		<br>
+		<div>Построенная СКНФ:</div>
+		<div id="answer2"></div>
 		<div>Результат:</div>
 		<div id="result"></div>
-
 	</form>
 	</body>
 </html>

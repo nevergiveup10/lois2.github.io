@@ -3,42 +3,94 @@
 	var answerFirstTask = 0;
 
 
-    function main(){
-    var formula = document.getElementById('userFormula').value;
-    answerFirstTask = checkValidation(formula);
-    if (formula == ""){
-        alert("Пустая строка!");
-    }
+    function main() {
+	//	let table = document.querySelector('#table');
+	//	let table2 = document.querySelector('#table2');
+	//	table.parentNode.removeChild(table);
+	//	table2.parentNode.removeChild(table2);
 
-    if (answerFirstTask == 1) {
-		document.getElementById("result").innerHTML = "";
-		document.getElementById("answer").innerHTML = "";
-		var resultSKNF = buildFormula(formula);
-		document.getElementById("answer").innerHTML = resultSKNF;
-		var userSKNF = document.getElementById('userSKNF').value;
-		if (userSKNF == resultSKNF){
-			document.getElementById("result").innerHTML = "Верно!";
+		var formula = document.getElementById('userFormula').value;
+
+		if (formula == "") {
+			alert("Пустая строка!");
 		}
-		else {
-			document.getElementById("result").innerHTML = "Неверно!"
 
+		answerFirstTask = checkValidation(formula);
+
+		if (answerFirstTask == 1) {
+			document.getElementById("result").innerHTML = "";
+			document.getElementById("answer").innerHTML = "";
+			var resultSKNF = buildFormula(formula);
+			document.getElementById("answer").innerHTML = resultSKNF;
+			var userSKNF = document.getElementById('userSKNF').value;
+		} else {
+			alert("Строка не является формулой логики высказываний!");
 		}
 	}
-        else {
-		alert("Строка не является формулой логики высказываний!");
-	}
-        
 
+		function testmode(){
+			var formula2 = document.getElementById('userFormula2').value;
+			answerFirstTask = checkValidation(formula2);
+			if (formula2 == ""){
+				alert("Пустая строка!");
+			}
+
+			if (answerFirstTask == 1) {
+				document.getElementById("result").innerHTML = "";
+				document.getElementById("answer2").innerHTML = "";
+				var resultSKNF = buildFormula(formula2);
+				document.getElementById("answer2").innerHTML = resultSKNF;
+				var userSKNF = document.getElementById('userSKNF').value;
+
+				let atoms1 = findAllUniqueAtoms(formula2);
+				let interpretation1 = buildInterpretation(formula2);
+				let truthTable1 = buildTruthTable(formula2, interpretation1);
+
+				let atoms2 = findAllUniqueAtoms(userSKNF);
+				let interpretation2 = buildInterpretation(userSKNF);
+				let truthTable2 = buildTruthTable(userSKNF, interpretation2);
+
+
+
+				if (userSKNF.length == resultSKNF.length && ifTruthTabEqual(truthTable1, truthTable2)==true && ifAtomsEqual(atoms1,atoms2)){
+					document.getElementById("result").innerHTML = "Верно!";
+				}
+				else {
+					document.getElementById("result").innerHTML = "Неверно!"
+
+				}
+			}
+			else {
+				alert("Строка не является формулой логики высказываний!");
+			}
+
+			function ifTruthTabEqual(truthTable1, truthTable2){
+				for (let i=0; i<truthTable1.length; i++){
+					if(truthTable1[i] != truthTable2[i]) return false;
+				}
+				return true;
+			}
+
+			function ifAtomsEqual(atoms1, atoms2) {
+				for(let i=0; i<atoms1.length; i++){
+					if (atoms2.includes(atoms1[i])==false) return false;
+				}
+
+				for(let i=0; i<atoms2.length; i++){
+					if (atoms1.includes(atoms2[i])==false) return false;
+				}
+				return true;
+			}
     }
 
 	function checkValidation(formula) 
 	{
-		var constOrAtom = formula.match(/^[A-Z0-1]{1}$/);
+		var constOrAtom = formula.match(/^[A-Z0-1]$/);
 		if(constOrAtom != null) answerFirstTask = 1;			
 		else 
 		{	
 			var oldFormula = formula;
-			formula = formula.replace(/(\([A-Z0-1]{1}([&\|~]|(->))[A-Z0-1]{1}\))|(\(![A-Z0-1]\))/g, "1");
+			formula = formula.replace(/(\([A-Z0-1]([&\|~]|(->))[A-Z0-1]\))|(\(![A-Z0-1]\))/g, "1");
 		
 			if(oldFormula != formula)
 				checkValidation(formula);
@@ -48,12 +100,15 @@
 	}
 
 
-	function buildFormula(formula) {
+
+function buildFormula(formula)
 		{
 			let sknfFormula = "";
 			let interpretation = buildInterpretation(formula);
 			let truthTable = buildTruthTable(formula, interpretation);
 			sknfFormula = buildConjunctionOfDisjuncts(interpretation, truthTable);
+
+			printTruthTable(formula, interpretation, truthTable);
 
 			return sknfFormula;
 		}
@@ -356,4 +411,45 @@
 
 			return formulaPart;
 		}
+
+	function printTruthTable(formula, interpretation, truthTable) {
+		let table = document.querySelector('#table');
+		let table2 = document.querySelector('#table2');
+		let atoms = findAllUniqueAtoms(formula);
+		let interpretationInt= [];
+		let tableValue = [];
+
+		let tableTitle = atoms.concat(formula);
+
+
+		for (let i = 0; i<interpretation.length; i++){
+			interpretationInt [i] = Object.values(interpretation[i]);
+
+		}
+
+		for (let i = 0; i<interpretation.length; i++){
+			tableValue [i] = interpretationInt[i].concat(truthTable[i]);
+		}
+
+
+			let tr = document.createElement('tr');
+			for (let i = 0; i < tableTitle.length; i++) {
+				let td = document.createElement('td');
+			td.innerHTML = tableTitle[i];
+			tr.appendChild(td);
+			table.appendChild(tr);
+		}
+
+		for (let i = 0; i < tableValue.length; i++) {
+			let tr = document.createElement('tr');
+
+			for (let j = 0; j < tableValue[i].length; j++) {
+				let td = document.createElement('td');
+				td.innerHTML = "&nbsp" + tableValue[i][j];
+				tr.appendChild(td);
+			}
+
+			table2.appendChild(tr);
+		}
+
 	}
