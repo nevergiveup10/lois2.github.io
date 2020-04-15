@@ -1,7 +1,8 @@
 //ЛР 2. Вариант 8. Построить СКНФ для заданной формулы.
 //Автор: Смоленский П.М., гр. 721702
 	var answerFirstTask = 0;
-
+	var userSKNF;
+	var resultSKNF;
 
     function main() {
 	//	let table = document.querySelector('#table');
@@ -10,6 +11,7 @@
 	//	table2.parentNode.removeChild(table2);
 
 		var formula = document.getElementById('userFormula').value;
+
 
 		if (formula == "") {
 			alert("Пустая строка!");
@@ -29,6 +31,7 @@
 	}
 
 		function testmode(){
+			var formulasArray = ["((A&B)&C)", "((C&B)~(!A))" , "((A~B)&(!(B|A)))", "(((A|C)->(B&C))&((A|B)->B))", "(A->B)", "(((A|B)|C)~((A|B)&(A|C)))"];
 			var formula2 = document.getElementById('userFormula2').value;
 			answerFirstTask = checkValidation(formula2);
 			if (formula2 == ""){
@@ -38,50 +41,33 @@
 			if (answerFirstTask == 1) {
 				document.getElementById("result").innerHTML = "";
 				document.getElementById("answer2").innerHTML = "";
-				var resultSKNF = buildFormula(formula2);
-				document.getElementById("answer2").innerHTML = resultSKNF;
-				var userSKNF = document.getElementById('userSKNF').value;
+				resultSKNF = buildFormula(formula2);
+				formulasArray.push(resultSKNF);
+				var randNumb = getRandomNumb(0,formulasArray.length);
+				userSKNF = formulasArray[randNumb];
+				document.getElementById("answer2").innerHTML = userSKNF;
 
-				let atoms1 = findAllUniqueAtoms(formula2);
-				let interpretation1 = buildInterpretation(formula2);
-				let truthTable1 = buildTruthTable(formula2, interpretation1);
-
-				let atoms2 = findAllUniqueAtoms(userSKNF);
-				let interpretation2 = buildInterpretation(userSKNF);
-				let truthTable2 = buildTruthTable(userSKNF, interpretation2);
-
-
-
-				if (userSKNF.length == resultSKNF.length && ifTruthTabEqual(truthTable1, truthTable2)==true && ifAtomsEqual(atoms1,atoms2)){
-					document.getElementById("result").innerHTML = "Верно!";
-				}
-				else {
-					document.getElementById("result").innerHTML = "Неверно!"
-
-				}
-			}
-			else {
-				alert("Строка не является формулой логики высказываний!");
 			}
 
-			function ifTruthTabEqual(truthTable1, truthTable2){
-				for (let i=0; i<truthTable1.length; i++){
-					if(truthTable1[i] != truthTable2[i]) return false;
-				}
-				return true;
+
+			function getRandomNumb(min, max)
+			{
+				return Math.floor(Math.random() * (max - min)) + min;
 			}
 
-			function ifAtomsEqual(atoms1, atoms2) {
-				for(let i=0; i<atoms1.length; i++){
-					if (atoms2.includes(atoms1[i])==false) return false;
-				}
-
-				for(let i=0; i<atoms2.length; i++){
-					if (atoms1.includes(atoms2[i])==false) return false;
-				}
-				return true;
-			}
     }
+
+
+function yesansw(){
+	if (resultSKNF == userSKNF){document.getElementById("result").innerHTML = "Верно!"; }
+	else {document.getElementById("result").innerHTML = "Неверно!"; }
+}
+
+function noansw(){
+	if (resultSKNF != userSKNF){document.getElementById("result").innerHTML = "Верно!"; }
+	else {document.getElementById("result").innerHTML = "Неверно!"; }
+}
+
 
 	function checkValidation(formula) 
 	{
@@ -415,6 +401,10 @@ function buildFormula(formula)
 	function printTruthTable(formula, interpretation, truthTable) {
 		let table = document.querySelector('#table');
 		let table2 = document.querySelector('#table2');
+
+		table.innerHTML="";
+		table2.innerHTML="";
+
 		let atoms = findAllUniqueAtoms(formula);
 		let interpretationInt= [];
 		let tableValue = [];

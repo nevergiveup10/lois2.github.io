@@ -26,12 +26,13 @@
 		<br>
 		<div>Режим тестирования<br>Введите формулу:</div>
 		<input type="text" id="userFormula2" placeholder=""><br>
-		<div>Введите СКНФ:</div>
-		<input type="text" id="userSKNF" placeholder=""><br>
-		<input type="button" id="valid" value="Проверить" onclick="testmode();">
+		<input type="button" id="valid" value="Построить СКНФ" onclick="testmode();">
 		<br>
-		<div>Построенная СКНФ:</div>
+		<div>СКНФ построена верно?:</div>
 		<div id="answer2"></div>
+
+		<input type="button" id="yeah" value="Да" onclick="yesansw();">
+		<input type="button" id="nah" value="Нет" onclick="noansw();">
 		<div>Результат:</div>
 		<div id="result"></div>
 	</form>
